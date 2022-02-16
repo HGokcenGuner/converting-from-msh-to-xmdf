@@ -8,15 +8,15 @@ from configparser import ConfigParser
 import numpy as np
 
 # Importing mesh from gmsh and defining surface and boundary markers
-msh = meshio.read("mesh30.msh")
+msh = meshio.read("mesh32_2.msh")
 
 # print(msh.cell_sets_dict)
 
 
 print(msh.cell_data_dict)
-for key in msh.cell_data_dict["gmsh:physical"].keys():
+for key in msh.cell_data_dict["gmsh:geometrical"].keys():
     if key == "triangle":
-        triangle_data = msh.cell_data_dict["gmsh:physical"][key]
+        triangle_data = msh.cell_data_dict["gmsh:geometrical"][key]
 
 for cell in msh.cells:
     if cell.type == "tetra":
@@ -55,11 +55,11 @@ b_c = Boundary()
 b_c.mark(boundary_markers, 3)
 
 File("MSH3.pvd") << boundary_markers
+# Compiling subdomains
 
 ds = Measure('ds', domain=mesh, subdomain_data=boundary_markers)
 
 dx_filled = Measure("dx", domain=mesh, subdomain_data=mf, subdomain_id=2)
 dx_main = Measure("dx", domain=mesh, subdomain_data=mf, subdomain_id=1)
-# Compiling subdomains
 
 
